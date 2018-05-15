@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/lxc/lxd/client"
+	"github.com/lxc/lxd/shared/api"
 )
 
 func connectToLXDserver() error {
@@ -13,7 +14,7 @@ func connectToLXDserver() error {
 
 	// Container creation request
 	req := api.ContainersPost{
-		Name: "my-container",
+		Name: "madewithapi",
 		Source: api.ContainerSource{
 			Type:  "image",
 			Alias: "my-image",
@@ -38,7 +39,7 @@ func connectToLXDserver() error {
 		Timeout: -1,
 	}
 
-	op, err = c.UpdateContainerState(name, reqState, "")
+	op, err = c.UpdateContainerState("madewithapi", reqState, "")
 	if err != nil {
 		return err
 	}
