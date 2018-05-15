@@ -1,31 +1,56 @@
 package main
 
 import (
-	"io/ioutil"
-
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/lxc/lxd/client"
 )
 
-// Handler is executed by AWS Lambda in the main function. Once the request
-// is processed, it returns an Amazon API Gateway response object to AWS Lambda
-func Handler(request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-
-	index, err := ioutil.ReadFile("public/index.html")
+func connectToLXDserver() error {
+	// Connect to LXD over the Unix socket
+	c, err := lxd.ConnectLXDUnix("", nil)
 	if err != nil {
-		return events.APIGatewayProxyResponse{}, err
+		return err
 	}
 
-	return events.APIGatewayProxyResponse{
-		StatusCode: 200,
-		Body:       string(index),
-		Headers: map[string]string{
-			"Content-Type": "text/html",
+	// Container creation request
+	req := api.ContainersPost{
+		Name: "my-container",
+		Source: api.ContainerSource{
+			Type:  "image",
+			Alias: "my-image",
 		},
-	}, nil
+	}
 
+	// Get LXD to create the container (background operation)
+	op, err := c.CreateContainer(req)
+	if err != nil {
+		return err
+	}
+
+	// Wait for the operation to complete
+	err = op.Wait()
+	if err != nil {
+		return err
+	}
+
+	// Get LXD to start the container (background operation)
+	reqState := api.ContainerStatePut{
+		Action:  "start",
+		Timeout: -1,
+	}
+
+	op, err = c.UpdateContainerState(name, reqState, "")
+	if err != nil {
+		return err
+	}
+
+	// Wait for the operation to complete
+	err = op.Wait()
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func main() {
-	lambda.Start(Handler)
+	connectToLXDserver()
 }
