@@ -17,7 +17,7 @@ func connectToLXDserver() error {
 		Name: "madewithapi",
 		Source: api.ContainerSource{
 			Type:  "image",
-			Alias: "my-image",
+			Alias: "image4go",
 		},
 	}
 
