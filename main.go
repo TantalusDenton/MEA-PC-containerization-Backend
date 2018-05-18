@@ -1,14 +1,19 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
 )
 
 func connectToLXDserver() error {
 	// Connect to LXD over the Unix socket
-	c, err := lxd.ConnectLXDUnix("", nil)
+	argumentsToPass := &lxd.ConnectionArgs{TLSClientCert: "/home/lxd-api-access-cert-key-files/lxd-type3access.crt", InsecureSkipVerify: true}
+
+	c, err := lxd.ConnectLXD("127.0.0.1", argumentsToPass)
 	if err != nil {
+		fmt.Print("Could not connect")
 		return err
 	}
 
