@@ -30,7 +30,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
-	file, err := os.Create(item)
+	file, err := os.Create("/tmp/" + item)
 	if err != nil {
 		exitErrorf("Unable to open file %q, %v", err)
 	}
@@ -68,15 +68,15 @@ func connectToLXDserver() error {
 	GetFileFromS3(clientKeyFromS3)
 
 	// Connection parameters - LXD API needs to know client cert, key and server cert
-	ClientCertFile, errcert := ioutil.ReadFile(clientCertFromS3)
+	ClientCertFile, errcert := ioutil.ReadFile("/tmp/" + clientCertFromS3)
 	checkFileForError(errcert)
 	ClientCertString := string(ClientCertFile)
 
-	ClientKeyFile, errkey := ioutil.ReadFile(clientKeyFromS3)
+	ClientKeyFile, errkey := ioutil.ReadFile("/tmp/" + clientKeyFromS3)
 	checkFileForError(errkey)
 	ClientKeyString := string(ClientKeyFile)
 
-	ServerCertFile, errservercert := ioutil.ReadFile(serverCertFromS3)
+	ServerCertFile, errservercert := ioutil.ReadFile("/tmp/" + serverCertFromS3)
 	checkFileForError(errservercert)
 	ServerCertString := string(ServerCertFile)
 
