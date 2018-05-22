@@ -87,7 +87,7 @@ func connectToLXDserver() error {
 		/*InsecureSkipVerify: true*/}
 
 	// Connect to LXD over http
-	c, err := lxd.ConnectLXD("https://172.30.2.21:8443", argumentsToPass)
+	c, err := lxd.ConnectLXD("https://172.30.2.171:8443", argumentsToPass)
 	if err != nil {
 		fmt.Print("Could not connect because of error: ", err)
 		fmt.Print("server cert is: ", ServerCertString)
