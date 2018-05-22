@@ -10,7 +10,7 @@ Features planned include:
 
 * Deployment of containers in a way similar to deployment of VMs
 * Management of container lifesycles (create, start, stop, delete)
-* COntainer resource management (CPU, RAM, Storage, GPU)
+* Container resource management (CPU, RAM, Storage, GPU)
 * Container storage pool management
 * Container image management
 * Container network management 
@@ -27,3 +27,4 @@ Type3 uses the following dependencies:
 ------------------
 
 * LXD Go API by Canonical
+* AWS SDK for GO

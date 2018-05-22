@@ -24,7 +24,7 @@ func exitErrorf(msg string, args ...interface{}) {
 	os.Exit(1)
 }
 
-//GetFilesFromS3 is a reusable function. Just call it and tell it which files to download.
+//GetFileFromS3 is a reusable function. Just call it and tell it which files to download.
 func GetFileFromS3(S3itemToDOwnload string) {
 
 	bucket := "lxd-server-certificates"
