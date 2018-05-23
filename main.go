@@ -58,6 +58,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 func connectToLXDserver() error {
 
+	cloudComputerName := "madewithapiLambda-1"
+
 	//declare certs for passing to AWS S3 function
 	serverCertFromS3 := "ec2-lxd-server-for-go-api.crt"
 	clientCertFromS3 := "lxd-type3access.crt"
@@ -87,7 +89,7 @@ func connectToLXDserver() error {
 		/*InsecureSkipVerify: true*/}
 
 	// Connect to LXD over http
-	c, err := lxd.ConnectLXD("https://172.30.2.171:8443", argumentsToPass)
+	c, err := lxd.ConnectLXD("https://127.0.0.1:8443", argumentsToPass)
 	if err != nil {
 		fmt.Print("Could not connect because of error: ", err)
 		fmt.Print("server cert is: ", ServerCertString)
@@ -96,7 +98,7 @@ func connectToLXDserver() error {
 
 	// Container creation request
 	req := api.ContainersPost{
-		Name: "madewithapi",
+		Name: cloudComputerName,
 		Source: api.ContainerSource{
 			Type:  "image",
 			Alias: "image4go",
@@ -123,7 +125,7 @@ func connectToLXDserver() error {
 		Timeout: -1,
 	}
 
-	op, err = c.UpdateContainerState("madewithapi", reqState, "")
+	op, err = c.UpdateContainerState(cloudComputerName, reqState, "")
 	if err != nil {
 		fmt.Print("Could not update container status because of error: ", err)
 		return err
