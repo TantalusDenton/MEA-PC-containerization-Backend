@@ -8,6 +8,7 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/lxc/lxd/client"
@@ -44,6 +45,8 @@ func exitErrorf(msg string, args ...interface{}) {
 //GetFileFromS3 is a reusable function. Just call it and tell it which files to download.
 func GetFileFromS3(S3itemToDOwnload string) {
 
+	KeyID := os.Getenv("KeyID")
+	SecretKey := os.Getenv("SecretKey")
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
@@ -57,7 +60,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	// Initialize a session in us-east-1.
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String("us-east-1")},
+		Region: aws.String("us-east-1"),
+		Credentials: credentials.NewSharedCredentials(KeyID, SecretKey),},
 	)
 
 	downloader := s3manager.NewDownloader(sess)
