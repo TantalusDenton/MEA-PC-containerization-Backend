@@ -61,7 +61,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	// Initialize a session in us-east-1.
 	sess, _ := session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
-		Credentials: credentials.NewSharedCredentials(KeyID, SecretKey),},
+		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")},
 	)
 
 	downloader := s3manager.NewDownloader(sess)
