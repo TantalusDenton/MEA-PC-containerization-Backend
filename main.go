@@ -14,6 +14,16 @@ import (
 	"github.com/lxc/lxd/shared/api"
 )
 
+// StartedMainFunction is used by lambda.start to log errors. TODO: pass error
+func StartedMainFunction() {
+	log.Print("Started Main Function...")
+}
+
+// StartedDownloadingFunction is used by lambda.start to log errors. TODO: pass error
+func StartedDownloadingFunction() {
+	log.Print("Started Downloading from s3 Function...")
+}
+
 // LogErrorToCloudWatch is used by lambda.start to log errors. TODO: pass error
 func LogErrorToCloudWatch() {
 	log.Print("Could not connect because of some error...")
@@ -49,6 +59,8 @@ func exitErrorf(msg string, args ...interface{}) {
 
 //GetFileFromS3 is a reusable function. Just call it and tell it which files to download.
 func GetFileFromS3(S3itemToDOwnload string) {
+
+	lambda.Start(StartedDownloadingFunction)
 
 	/*KeyID := os.Getenv("KeyID")
 	SecretKey := os.Getenv("SecretKey")*/
@@ -89,6 +101,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 }
 
 func connectToLXDserver() error {
+
+	lambda.Start(StartedMainFunction)
 
 	cloudComputerName := "madewithapiLambda-1"
 
