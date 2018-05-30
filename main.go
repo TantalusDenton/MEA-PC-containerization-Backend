@@ -1,15 +1,15 @@
 package main
 
 import (
-	//"io/ioutil"
+	"io/ioutil"
 	"log"
 	"os"
 
-	/*"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"*/
-	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
 )
@@ -17,6 +17,16 @@ import (
 // LogErrorToCloudWatch is used by lambda.start to log errors. TODO: pass error
 func LogErrorToCloudWatch() {
 	log.Print("Could not connect because of some error...")
+}
+
+// UnableToOpenFileErrorToLog is used by lambda.start to log errors
+func UnableToOpenFileErrorToLog() {
+	log.Print("Could not even create file in the file system...")
+}
+
+//UnableToDownloadFromS3ErrorToLogs is used by lambda.start to log errors
+func UnableToDownloadFromS3ErrorToLogs() {
+	log.Print("Could not downloads certs from S3...")
 }
 
 func checkFileForError(e error) {
@@ -32,7 +42,7 @@ func exitErrorf(msg string, args ...interface{}) {
 }
 
 //GetFileFromS3 is a reusable function. Just call it and tell it which files to download.
-/*func GetFileFromS3(S3itemToDOwnload string) {
+func GetFileFromS3(S3itemToDOwnload string) {
 
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
@@ -40,6 +50,7 @@ func exitErrorf(msg string, args ...interface{}) {
 	file, err := os.Create("/tmp/" + item)
 	if err != nil {
 		exitErrorf("Unable to open file %q, %v", err)
+		lambda.Start(UnableToOpenFileErrorToLog)
 	}
 
 	defer file.Close()
@@ -58,18 +69,19 @@ func exitErrorf(msg string, args ...interface{}) {
 		})
 	if err != nil {
 		exitErrorf("Unable to download item %q, %v", item, err)
+		lambda.Start(UnableToDownloadFromS3ErrorToLogs)
 	}
 
 	log.Print("Downloaded", file.Name(), numBytes, "bytes")
 	lambda.Start("Downloaded some certs from s3")
-}*/
+}
 
 func connectToLXDserver() error {
 
 	cloudComputerName := "madewithapiLambda-1"
 
 	//declare certs for passing to AWS S3 function
-	/*serverCertFromS3 := "ec2-lxd-server-for-go-api.crt"
+	serverCertFromS3 := "ec2-lxd-server-for-go-api.crt"
 	clientCertFromS3 := "lxd-type3access.crt"
 	clientKeyFromS3 := "lxd-type3access.key"
 
@@ -88,12 +100,12 @@ func connectToLXDserver() error {
 
 	ServerCertFile, errservercert := ioutil.ReadFile("/tmp/" + serverCertFromS3)
 	checkFileForError(errservercert)
-	ServerCertString := string(ServerCertFile)*/
+	ServerCertString := string(ServerCertFile)
 
 	argumentsToPass := &lxd.ConnectionArgs{
-		TLSClientCert: "ClientCertString",
-		TLSClientKey:  "ClientKeyString",
-		TLSServerCert: "ServerCertString",
+		TLSClientCert: ClientCertString,
+		TLSClientKey:  ClientKeyString,
+		TLSServerCert: ServerCertString,
 		/*InsecureSkipVerify: true*/}
 
 	// Connect to LXD over http
