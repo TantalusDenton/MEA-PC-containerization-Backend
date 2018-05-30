@@ -8,7 +8,6 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/lxc/lxd/client"
@@ -50,6 +49,9 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
+	os.Setenv("AWS_ACCESS_KEY_ID", KeyID)
+	os.Setenv("AWS_SECRET_ACCESS_KEY", SecretKey)
+
 	file, err := os.Create("/tmp/" + item)
 	if err != nil {
 		exitErrorf("Unable to open file %q, %v", err)
@@ -61,7 +63,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	// Initialize a session in us-east-1.
 	sess, _ := session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1"),
-		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")},
+		/*Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")*/},
 	)
 
 	downloader := s3manager.NewDownloader(sess)
