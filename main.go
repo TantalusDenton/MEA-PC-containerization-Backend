@@ -29,6 +29,12 @@ func UnableToDownloadFromS3ErrorToLogs() {
 	log.Print("Could not downloads certs from S3...")
 }
 
+//SuccessfullyDownloadFromS3ErrorToLogs is used by lambda.start to log success
+func SuccessfullyDownloadFromS3ErrorToLogs() {
+	log.Print("Downloaded some certs from s3")
+}
+
+
 func checkFileForError(e error) {
 	if e != nil {
 		panic(e)
@@ -79,7 +85,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	}
 
 	log.Print("Downloaded", file.Name(), numBytes, "bytes")
-	lambda.Start("Downloaded some certs from s3")
+	lambda.Start(SuccessfullyDownloadFromS3ErrorToLogs)
 }
 
 func connectToLXDserver() error {
