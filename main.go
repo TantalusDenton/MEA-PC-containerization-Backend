@@ -102,7 +102,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 func connectToLXDserver() error {
 
-	lambda.Start(StartedMainFunction)
+	log.Print("started main function...")
 
 	cloudComputerName := "madewithapiLambda-1"
 
