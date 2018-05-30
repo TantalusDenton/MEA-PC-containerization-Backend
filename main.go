@@ -9,9 +9,15 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
 )
+
+// LogErrorToCloudWatch is used by lambda.start to log errors. TODO: pass error
+func LogErrorToCloudWatch() {
+	log.Print("Could not connect because of some error...")
+}
 
 func checkFileForError(e error) {
 	if e != nil {
@@ -55,6 +61,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	}
 
 	log.Print("Downloaded", file.Name(), numBytes, "bytes")
+	lambda.Start("Downloaded some certs from s3")
 }
 
 func connectToLXDserver() error {
@@ -92,8 +99,8 @@ func connectToLXDserver() error {
 	// Connect to LXD over http
 	c, err := lxd.ConnectLXD("https://172.30.2.171:8443", argumentsToPass)
 	if err != nil {
-		log.Print("Could not connect because of error: ", err)
-		log.Print("server cert is: ", ServerCertString)
+		//log.Print("Could not connect because of error: ", err)
+		lambda.Start(LogErrorToCloudWatch)
 		return err
 	}
 
