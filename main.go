@@ -1,8 +1,8 @@
 package main
 
 import (
-	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -20,7 +20,8 @@ func checkFileForError(e error) {
 }
 
 func exitErrorf(msg string, args ...interface{}) {
-	fmt.Fprintf(os.Stderr, msg+"\n", args...)
+	//fmt.Fprintf(os.Stderr, msg+"\n", args...)
+	log.Print(msg+"\n", args)
 	os.Exit(1)
 }
 
@@ -53,7 +54,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 		exitErrorf("Unable to download item %q, %v", item, err)
 	}
 
-	fmt.Println("Downloaded", file.Name(), numBytes, "bytes")
+	log.Print("Downloaded", file.Name(), numBytes, "bytes")
 }
 
 func connectToLXDserver() error {
@@ -89,10 +90,10 @@ func connectToLXDserver() error {
 		/*InsecureSkipVerify: true*/}
 
 	// Connect to LXD over http
-	c, err := lxd.ConnectLXD("https://127.0.0.1:8443", argumentsToPass)
+	c, err := lxd.ConnectLXD("https://172.30.2.171:8443", argumentsToPass)
 	if err != nil {
-		fmt.Print("Could not connect because of error: ", err)
-		fmt.Print("server cert is: ", ServerCertString)
+		log.Print("Could not connect because of error: ", err)
+		log.Print("server cert is: ", ServerCertString)
 		return err
 	}
 
@@ -108,14 +109,14 @@ func connectToLXDserver() error {
 	// Get LXD to create the container (background operation)
 	op, err := c.CreateContainer(req)
 	if err != nil {
-		fmt.Print("Could not create container because of error: ", err)
+		log.Print("Could not create container because of error: ", err)
 		return err
 	}
 
 	// Wait for the operation to complete
 	err = op.Wait()
 	if err != nil {
-		fmt.Print("Could not wait for operation because of error: ", err)
+		log.Print("Could not wait for operation because of error: ", err)
 		return err
 	}
 
@@ -127,14 +128,14 @@ func connectToLXDserver() error {
 
 	op, err = c.UpdateContainerState(cloudComputerName, reqState, "")
 	if err != nil {
-		fmt.Print("Could not update container status because of error: ", err)
+		log.Print("Could not update container status because of error: ", err)
 		return err
 	}
 
 	// Wait for the operation to complete
 	err = op.Wait()
 	if err != nil {
-		fmt.Print("Could not wait because of error: ", err)
+		log.Print("Could not wait because of error: ", err)
 		return err
 	}
 	return err
