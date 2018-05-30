@@ -34,6 +34,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	KeyID := os.Getenv("KeyID")
 	SecretKey := os.Getenv("SecretKey")
+	TokenForSession := os.Getenv("AWS_SESSION_TOKEN")
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
@@ -51,7 +52,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	// Initialize a session in us-east-1.
 	sess, _ := session.NewSession(&aws.Config{
 		Region:      aws.String("us-east-1"),
-		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "123")},
+		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, TokenForSession)},
 	)
 
 	downloader := s3manager.NewDownloader(sess)
