@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -13,37 +12,6 @@ import (
 	"github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
 )
-
-// StartedMainFunction is used by lambda.start to log errors. TODO: pass error
-func StartedMainFunction() {
-	log.Print("Started Main Function...")
-}
-
-// StartedDownloadingFunction is used by lambda.start to log errors. TODO: pass error
-func StartedDownloadingFunction() {
-	log.Print("Started Downloading from s3 Function...")
-}
-
-// LogErrorToCloudWatch is used by lambda.start to log errors. TODO: pass error
-func LogErrorToCloudWatch() {
-	log.Print("Could not connect because of some error...")
-}
-
-// UnableToOpenFileErrorToLog is used by lambda.start to log errors
-func UnableToOpenFileErrorToLog() {
-	log.Print("Could not even create file in the file system...")
-}
-
-//UnableToDownloadFromS3ErrorToLogs is used by lambda.start to log errors
-func UnableToDownloadFromS3ErrorToLogs() {
-	log.Print("Could not downloads certs from S3...")
-}
-
-//SuccessfullyDownloadFromS3ErrorToLogs is used by lambda.start to log success
-func SuccessfullyDownloadFromS3ErrorToLogs() {
-	log.Print("Downloaded some certs from s3")
-}
-
 
 func checkFileForError(e error) {
 	if e != nil {
@@ -60,7 +28,7 @@ func exitErrorf(msg string, args ...interface{}) {
 //GetFileFromS3 is a reusable function. Just call it and tell it which files to download.
 func GetFileFromS3(S3itemToDOwnload string) {
 
-	lambda.Start(StartedDownloadingFunction)
+	log.Print("Started Downloading from s3 Function...")
 
 	/*KeyID := os.Getenv("KeyID")
 	SecretKey := os.Getenv("SecretKey")*/
@@ -73,7 +41,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	file, err := os.Create("/tmp/" + item)
 	if err != nil {
 		exitErrorf("Unable to open file %q, %v", err)
-		lambda.Start(UnableToOpenFileErrorToLog)
+		log.Print("Could not even create file in the file system...")
 	}
 
 	defer file.Close()
@@ -93,11 +61,10 @@ func GetFileFromS3(S3itemToDOwnload string) {
 		})
 	if err != nil {
 		exitErrorf("Unable to download item %q, %v", item, err)
-		lambda.Start(UnableToDownloadFromS3ErrorToLogs)
+		log.Print("Could not downloads certs from S3...")
 	}
 
 	log.Print("Downloaded", file.Name(), numBytes, "bytes")
-	lambda.Start(SuccessfullyDownloadFromS3ErrorToLogs)
 }
 
 func connectToLXDserver() error {
@@ -138,7 +105,7 @@ func connectToLXDserver() error {
 	c, err := lxd.ConnectLXD("https://172.30.2.171:8443", argumentsToPass)
 	if err != nil {
 		//log.Print("Could not connect because of error: ", err)
-		lambda.Start(LogErrorToCloudWatch)
+		log.Print("Could not connect because of some error...")
 		return err
 	}
 
