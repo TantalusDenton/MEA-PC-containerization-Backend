@@ -44,13 +44,13 @@ func exitErrorf(msg string, args ...interface{}) {
 //GetFileFromS3 is a reusable function. Just call it and tell it which files to download.
 func GetFileFromS3(S3itemToDOwnload string) {
 
-	KeyID := os.Getenv("KeyID")
-	SecretKey := os.Getenv("SecretKey")
+	/*KeyID := os.Getenv("KeyID")
+	SecretKey := os.Getenv("SecretKey")*/
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
-	os.Setenv("AWS_ACCESS_KEY_ID", KeyID)
-	os.Setenv("AWS_SECRET_ACCESS_KEY", SecretKey)
+	/*os.Setenv("AWS_ACCESS_KEY_ID", KeyID)
+	os.Setenv("AWS_SECRET_ACCESS_KEY", SecretKey)*/
 
 	file, err := os.Create("/tmp/" + item)
 	if err != nil {
