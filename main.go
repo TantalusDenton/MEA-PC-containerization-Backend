@@ -5,6 +5,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/aws/aws-sdk-go/aws/credentials"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
@@ -30,8 +32,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	log.Print("Started Downloading from s3 Function...")
 
-	/*KeyID := os.Getenv("KeyID")
-	SecretKey := os.Getenv("SecretKey")*/
+	KeyID := os.Getenv("KeyID")
+	SecretKey := os.Getenv("SecretKey")
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
@@ -48,8 +50,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	// Initialize a session in us-east-1.
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String("us-east-1"),
-		/*Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")*/},
+		Region:      aws.String("us-east-1"),
+		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")},
 	)
 
 	downloader := s3manager.NewDownloader(sess)
