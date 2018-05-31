@@ -56,6 +56,9 @@ func GetFileFromS3(S3itemToDOwnload string) {
 		Region:      aws.String("us-east-1"),
 		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, TokenForSession)},
 	)
+	log.Print("KeyID is ", KeyID)
+	log.Print("SecretKey is ", SecretKey)
+	log.Print("TokenForSession is ", TokenForSession)
 
 	downloader := s3manager.NewDownloader(sess)
 
@@ -84,8 +87,8 @@ func connectToLXDserver() error {
 	clientKeyFromS3 := "lxd-type3access.key"
 
 	GetFileFromS3(serverCertFromS3)
-	//GetFileFromS3(clientCertFromS3)
-	//GetFileFromS3(clientKeyFromS3)
+	GetFileFromS3(clientCertFromS3)
+	GetFileFromS3(clientKeyFromS3)
 
 	// Connection parameters - LXD API needs to know client cert, key and server cert
 	ClientCertFile, errcert := ioutil.ReadFile("/tmp/" + clientCertFromS3)
