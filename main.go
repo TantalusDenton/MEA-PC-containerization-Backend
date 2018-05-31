@@ -52,15 +52,20 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	defer file.Close()
 
 	// Initialize a session in us-east-1.
-	sess, _ := session.NewSession(&aws.Config{
+	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("us-east-1"),
 		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, TokenForSession)},
 	)
+	if err != nil {
+		log.Print("Could not start download session for S3 because of: ", err)
+	}
+
 	log.Print("KeyID is ", KeyID)
 	log.Print("SecretKey is ", SecretKey)
 	log.Print("TokenForSession is ", TokenForSession)
 
 	downloader := s3manager.NewDownloader(sess)
+	
 
 	numBytes, err := downloader.Download(file,
 		&s3.GetObjectInput{
@@ -69,7 +74,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 		})
 	if err != nil {
 		exitErrorf("Unable to download item %q, %v", item, err)
-		log.Print("Could not downloads certs from S3...")
+		log.Print("Could not downloads certs from S3 because of: ", err)
 	}
 
 	log.Print("Downloaded", file.Name(), numBytes, "bytes")
