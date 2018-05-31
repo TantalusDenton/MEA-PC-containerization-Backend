@@ -54,7 +54,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	// Initialize a session in us-east-1.
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("us-east-1"),
-		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, TokenForSession)},
+		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")},
 	)
 	if err != nil {
 		log.Print("Could not start download session for S3 because of: ", err)
