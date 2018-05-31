@@ -45,6 +45,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	if err != nil {
 		exitErrorf("Unable to open file %q, %v", err)
 		log.Print("Could not even create file in the file system...")
+	} else {
+		log.Print("Created file in the file system...")
 	}
 
 	defer file.Close()
@@ -82,8 +84,8 @@ func connectToLXDserver() error {
 	clientKeyFromS3 := "lxd-type3access.key"
 
 	GetFileFromS3(serverCertFromS3)
-	GetFileFromS3(clientCertFromS3)
-	GetFileFromS3(clientKeyFromS3)
+	//GetFileFromS3(clientCertFromS3)
+	//GetFileFromS3(clientKeyFromS3)
 
 	// Connection parameters - LXD API needs to know client cert, key and server cert
 	ClientCertFile, errcert := ioutil.ReadFile("/tmp/" + clientCertFromS3)
