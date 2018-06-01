@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
 	"io/ioutil"
 	"log"
 	"os"
@@ -52,7 +51,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	defer file.Close()
 
-	creds := credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{})
+	creds := credentials.NewEnvCredentials()
 	creds.Expire()
 	credsValue, err := creds.Get()
 	log.Print("logging creds... ", credsValue)
