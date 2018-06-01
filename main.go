@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/aws/aws-sdk-go/aws/credentials/ec2rolecreds"
 	"io/ioutil"
 	"log"
 	"os"
@@ -51,23 +52,26 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	defer file.Close()
 
+	creds := credentials.NewCredentials(&ec2rolecreds.EC2RoleProvider{})
+	creds.Expire()
+	credsValue, err := creds.Get()
+	log.Print("logging creds... ", credsValue)
+	
 	// Initialize a session in us-east-1.
 	sess, err := session.NewSession(&aws.Config{
 		Region:      aws.String("us-east-1"),
-		Credentials: credentials.NewEnvCredentials()},
+		Credentials: creds},
 	)
 	if err != nil {
 		log.Print("Could not start download session for S3 because of: ", err)
 	}
 
 	// Retrieve the credentials value
-	credValue, err := credentials.NewEnvCredentials().Get()
+	/*credValue, err := credentials.NewEnvCredentials().Get()
 	if err != nil {
 		log.Print("Could not Retrieve the credentials value because of: ", err)
-	}
+	}*/
 
-	placeholderVarCreds := credValue
-	log.Print("logging creds... ", placeholderVarCreds)
 	log.Print("KeyID is ", KeyID)
 	log.Print("SecretKey is ", SecretKey)
 	log.Print("TokenForSession is ", TokenForSession)
