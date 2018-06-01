@@ -5,12 +5,11 @@ import (
 	"log"
 	"os"
 
-	//"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
-	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 	"github.com/lxc/lxd/client"
 	"github.com/lxc/lxd/shared/api"
 )
@@ -35,7 +34,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	KeyID := os.Getenv("KeyID")
 	SecretKey := os.Getenv("SecretKey")
 	TokenForSession := os.Getenv("AWS_SESSION_TOKEN")
-	bucket := "lxd-server-certificates"
+	//bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
 
 	/*os.Setenv("AWS_ACCESS_KEY_ID", KeyID)
@@ -52,17 +51,26 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	defer file.Close()
 
 	// Initialize a session in us-east-1.
-	sess, err := session.NewSession()
+	/*sess, err := session.NewSession(&aws.Config{
+		Region:      aws.String("us-east-1"),
+		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")},
+	)
 	if err != nil {
 		log.Print("Could not start download session for S3 because of: ", err)
-	}
+	}*/
+
+	sess := s3.New(session.New(&aws.Config{
+		Region:      aws.String("us-east-1"),
+		Credentials: credentials.NewStaticCredentials(KeyID, SecretKey, "")}))
+
+	buckets, err := sess.ListBuckets(nil)
+	log.Printf("listBuckets: %q error=%v", buckets, err)
 
 	log.Print("KeyID is ", KeyID)
 	log.Print("SecretKey is ", SecretKey)
 	log.Print("TokenForSession is ", TokenForSession)
 
-	downloader := s3manager.NewDownloader(sess)
-	
+	/*downloader := s3manager.NewDownloader(sess)
 
 	numBytes, err := downloader.Download(file,
 		&s3.GetObjectInput{
@@ -74,7 +82,7 @@ func GetFileFromS3(S3itemToDOwnload string) {
 		log.Print("Could not downloads certs from S3 because of: ", err)
 	}
 
-	log.Print("Downloaded", file.Name(), numBytes, "bytes")
+	log.Print("Downloaded", file.Name(), numBytes, "bytes")*/
 }
 
 func connectToLXDserver() error {
