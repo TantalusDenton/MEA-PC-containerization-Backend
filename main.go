@@ -32,8 +32,8 @@ func GetFileFromS3(S3itemToDOwnload string) {
 
 	log.Print("Started Downloading from s3 Function...")
 
-	KeyID := os.Getenv("KeyID")
-	SecretKey := os.Getenv("SecretKey")
+	KeyID := os.Getenv("AWS_ACCESS_KEY_ID")
+	SecretKey := os.Getenv("AWS_SECRET_ACCESS_KEY")
 	TokenForSession := os.Getenv("AWS_SESSION_TOKEN")
 	bucket := "lxd-server-certificates"
 	item := S3itemToDOwnload
