@@ -117,8 +117,8 @@ func connectToLXDserver() error {
 	// Connect to LXD over http
 	c, err := lxd.ConnectLXD("https://172.30.2.171:8443", argumentsToPass)
 	if err != nil {
-		//log.Print("Could not connect because of error: ", err)
-		log.Print("Could not connect because of some error...")
+		log.Print("Could not connect because of error: ", err)
+		///log.Print("Could not connect because of some error...")
 		return err
 	}
 
