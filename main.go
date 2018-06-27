@@ -15,6 +15,7 @@ import (
 	"github.com/lxc/lxd/shared/api"
 )
 
+//test comment
 func checkFileForError(e error) {
 	if e != nil {
 		panic(e)
