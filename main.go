@@ -66,7 +66,6 @@ func GetFileFromS3(S3itemToDOwnload string) {
 	log.Print("TokenForSession is ", TokenForSession)
 
 	downloader := s3manager.NewDownloader(sess)
-	
 
 	numBytes, err := downloader.Download(file,
 		&s3.GetObjectInput{
